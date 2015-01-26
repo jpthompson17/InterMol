@@ -723,7 +723,7 @@ class LammpsParser(object):
                             'R{:02d}'.format(1))  # residue_name (R + moltype num)
                 atom.atomtype = (0, atomtype) 
                 atom.atomic_number = 0  #TODO: this must be defined for Desmond output; can we get this from LAMMPS?
-                atom.cgnr = 0  # TODO: look into alternatives
+                atom.cgnr = (int(fields[0]) - 1) / 32 + 1 # GROMACS enforces a limit of 32 atoms per charge group
                 atom.charge = (0, float(fields[3]) * self.CHARGE)
                 atom.mass = (0, self.mass_dict[int(fields[2])])
                 atom.position = [float(fields[4]) * self.DIST,
