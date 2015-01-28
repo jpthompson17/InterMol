@@ -72,7 +72,11 @@ class LammpsParser(object):
         if direction == 'into':
             canonical_force_scale = self.SCALE_INTO
         else:
-            typename = self.lookup_lammps_bonds[bond]
+            try:
+                typename = self.lookup_lammps_bonds[bond]
+            except KeyError:
+                logger.error("Found unimplemented bond type {0} for LAMMPS!".format(
+                    bond.__class__.__name__))
             canonical_force_scale = self.SCALE_FROM
 
         if bond in [HarmonicBond, HarmonicPotentialBond]:
@@ -100,7 +104,11 @@ class LammpsParser(object):
         if direction == 'into':
             canonical_force_scale = self.SCALE_INTO
         else:
-            typename = self.lookup_lammps_angles[angle]
+            try:
+                typename = self.lookup_lammps_angles[angle]
+            except KeyError:
+                logger.error("Found unimplemented angle type {0} for LAMMPS!".format(
+                    angle.__class__.__name__))
             canonical_force_scale = self.SCALE_FROM
 
         if angle in [HarmonicAngle, CosineSquaredAngle, UreyBradleyAngle]:
@@ -176,9 +184,9 @@ class LammpsParser(object):
                     if tmpparams['C6']._value == 0 and tmpparams['C5']._value == 0:
                         # Stupid convention?
                         if params['phi'].value_in_unit(units.degrees) == 180:
-                            params['phi']._value = 0
+                            params['phi'] = 0 * units.degrees
                         else:
-                            params['phi']._value = 180
+                            params['phi'] = 180 * units.degrees
                         tmpparams = convert_dihedral_from_trig_to_RB(params)
                         typename = 'multi/harmonic'
                         # It's a RB dihedral.
