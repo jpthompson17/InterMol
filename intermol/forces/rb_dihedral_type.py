@@ -2,6 +2,7 @@ import simtk.unit as units
 
 from intermol.decorators import accepts_compatible_units
 from abstract_dihedral_type import AbstractDihedralType
+from trig_dihedral_type import TrigDihedral
 
 
 class RbDihedralType(AbstractDihedralType):
