@@ -13,6 +13,11 @@ class ProperPeriodicDihedralType(AbstractDihedralType):
     where x is the dihedral angle of atoms i,j,k,l in 'protein' convention
     (i.e. x(trans) = 180 degrees)
 
+    NOTE 1: The weight attribute is a weight for 1-4 nonbonded interactions
+    between atoms i and l. It doesn't get stored in InterMol's internal
+    representation of dihedrals, but it's useful for reading LAMMPS 
+    'dihedral_style charmm' parameters.
+
     """
 
     __slots__ = ['phi', 'k', 'multiplicity', 'sign', 'weight', 'improper']
