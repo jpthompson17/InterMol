@@ -5,24 +5,40 @@ from abstract_dihedral_type import AbstractDihedralType
 
 
 class ProperPeriodicDihedralType(AbstractDihedralType):
-    __slots__ = ['phi', 'k', 'multiplicity', 'weight', 'improper']
+    """
+    Dihedral type with potential given by
+    
+      V(x) = k * (1 + sign*cos(multiplicity*x - phi)
+
+    where x is the dihedral angle of atoms i,j,k,l in 'protein' convention
+    (i.e. x(trans) = 180 degrees)
+
+    """
+
+    __slots__ = ['phi', 'k', 'multiplicity', 'sign', 'weight', 'improper']
 
     @accepts_compatible_units(None, None, None, None, 
                               phi=units.degrees,
                               k=units.kilojoules_per_mole,
                               multiplicity=units.dimensionless,
+                              sign=units.dimensionless,
                               weight=units.dimensionless,
                               improper=None)
     def __init__(self, bondingtype1, bondingtype2, bondingtype3, bondingtype4, 
                  phi=0.0 * units.degrees,
                  k=0.0 * units.kilojoules_per_mole,
                  multiplicity=0.0 * units.dimensionless,
+                 sign=1 * units.dimensionless,
                  weight=0.0 * units.dimensionless,
                  improper=False):
         AbstractDihedralType.__init__(self, bondingtype1, bondingtype2, bondingtype3, bondingtype4, improper)
+        if (phi != 0 * units.degrees) and (sign != 1 * units.dimensionless):
+            # probably didn't mean to set both of these; for now, pass
+            pass
         self.phi = phi
         self.k = k
         self.multiplicity = multiplicity
+        self.sign = sign
         self.weight = weight
 
 
@@ -46,3 +62,13 @@ class ProperPeriodicDihedral(ProperPeriodicDihedralType):
                 multiplicity=multiplicity,
                 weight=weight,
                 improper=improper)
+
+    def canonical(self):
+        fc = [0.0 * self.k] * 7
+        fc[0] = self.k
+        fc[self.multiplicity] = self.sign * self.k
+    
+        return TrigDihedral(self.atom1, self.atom2, self.atom3, self.atom4,
+                            self.bondingtype1, self.bondingtype2,
+                            self.bondingtype3, self.bondingtype4,
+                            self.phi, *fc, self.improper)
