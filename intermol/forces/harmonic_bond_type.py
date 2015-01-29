@@ -19,7 +19,7 @@ class HarmonicBondType(AbstractBondType):
 
     where k is the force constant specified in __init__. An example of where
     this might be useful is for force fields that specify the harmonic bond
-    potential as V = k/2 * (r - length)^2. Note that the prefactor typcically
+    potential as V = k/2 * (r - length)^2. Note that the prefactor typically
     should not be queried (hence, "_prefactor").
 
     """
